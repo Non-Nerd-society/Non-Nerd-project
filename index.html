@@ -150,7 +150,6 @@
             text-decoration: none;
         }
 
-        /* TÙY CHỈNH HÒA NHẬP LOGO CHÚ BÒ VÀO NỀN */
         .brand-logo-img {
             width: 42px;
             height: 42px;
@@ -271,23 +270,6 @@
             gap: 12px;
         }
 
-        .action-circle-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: 1px solid var(--border-line);
-            background-color: var(--bg-navbar);
-            color: var(--text-main);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            transition: transform 0.2s;
-        }
-
-        .action-circle-btn:hover { transform: scale(1.05); }
-
         .btn-cta-main {
             background-color: var(--btn-cta-bg);
             color: var(--btn-cta-text);
@@ -304,6 +286,94 @@
         .btn-cta-main:hover {
             opacity: 0.9;
             transform: translateY(-1px);
+        }
+
+        /* Nút Hamburger trên điện thoại */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--bg-navbar);
+            border: 1px solid var(--border-line);
+            font-size: 1.15rem;
+            color: var(--text-main);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .mobile-menu-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* Lớp phủ mờ nền khi mở Mobile Menu */
+        .mobile-drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1998;
+        }
+
+        .mobile-drawer-overlay.active {
+            display: block;
+        }
+
+        /* Menu trượt dạng ngăn kéo */
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background-color: var(--bg-card);
+            border-left: 1px solid var(--border-line);
+            padding: 24px 20px;
+            box-shadow: -6px 0 25px rgba(0, 0, 0, 0.2);
+            z-index: 1999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .mobile-drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 14px;
+            margin-bottom: 8px;
+        }
+
+        .mobile-nav-link {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.96rem;
+            font-weight: 600;
+            padding: 11px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.15s ease;
+        }
+
+        .mobile-nav-link:hover, .mobile-nav-link.active {
+            background-color: rgba(132, 204, 22, 0.15);
+            color: #65A30D;
+            padding-left: 18px;
         }
 
         .sub-header {
@@ -426,7 +496,11 @@
         @media (max-width: 768px) {
             header { padding: 12px 16px 12px 75px; }
             .nav-pill { display: none; }
-            .sub-header { padding: 12px 20px; }
+            .btn-cta-main { display: none; }
+            .mobile-menu-btn { display: flex; }
+            .sub-header { padding: 12px 20px; font-size: 0.7rem; }
+            .hero { padding: 36px 16px 60px; }
+            .hero-description { font-size: 1rem; }
         }
     </style>
 </head>
@@ -462,21 +536,44 @@
                 <ul class="dropdown-menu">
                     <li><a href="non-nerd-night.html">Non-Nerd Night</a></li>
                     <li><a href="workshop.html">Workshop chuyên sâu</a></li>
-                    <li><a href="memory.html">Memory</a></li>
+                    <li><a href="memory.html">Memories</a></li>
                 </ul>
             </div>
 
-            <!-- Dẫn sang request.html -->
             <a href="request.html" class="nav-link">Đặt lịch</a>
             <a href="apply.html" class="nav-link">Tuyển thành viên</a>
             <a href="gop-y.html" class="nav-link">Góp ý</a>
         </nav>
 
         <div class="nav-actions">
-            <!-- Dẫn sang request.html -->
             <a href="request.html" class="btn-cta-main">Đặt lịch ngay</a>
+            <!-- Nút Hamburger trên Mobile -->
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" title="Mở menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
     </header>
+
+    <!-- Khung Menu Trượt Điện Thoại (Drawer) -->
+    <div class="mobile-drawer-overlay" id="drawer-overlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="drawer-header">
+            <span class="brand-logo-text" style="font-size: 1.25rem; font-weight: 800;">Non-Nerd</span>
+            <button onclick="toggleMobileMenu()" style="background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 4px 8px;">&times;</button>
+        </div>
+        <a href="index.html" class="mobile-nav-link active"><i class="fa-solid fa-house" style="width: 20px;"></i> Trang chủ</a>
+        <a href="gioi-thieu.html" class="mobile-nav-link"><i class="fa-regular fa-compass" style="width: 20px;"></i> Giới thiệu</a>
+        <a href="non-nerd-night.html" class="mobile-nav-link"><i class="fa-solid fa-moon" style="width: 20px;"></i> Non-Nerd Night</a>
+        <a href="workshop.html" class="mobile-nav-link"><i class="fa-solid fa-chalkboard-user" style="width: 20px;"></i> Workshop chuyên sâu</a>
+        <a href="memory.html" class="mobile-nav-link"><i class="fa-solid fa-images" style="width: 20px;"></i> Memories</a>
+        <a href="request.html" class="mobile-nav-link"><i class="fa-regular fa-calendar-check" style="width: 20px;"></i> Đặt lịch</a>
+        <a href="apply.html" class="mobile-nav-link"><i class="fa-solid fa-user-plus" style="width: 20px;"></i> Tuyển thành viên</a>
+        <a href="gop-y.html" class="mobile-nav-link"><i class="fa-regular fa-comment-dots" style="width: 20px;"></i> Góp ý</a>
+
+        <div style="margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-line);">
+            <a href="request.html" class="btn-frame" style="width: 100%; text-align: center; margin-top: 0; padding: 12px;">Đặt lịch ngay</a>
+        </div>
+    </div>
 
     <div class="sub-header">
         <span>NON-NERD SOCIETY</span>
@@ -507,6 +604,25 @@
         </a>
     </main>
 
+    <!-- ================= FOOTER CREDIT ================= -->
+    <footer style="width: 100%; padding: 40px 20px; border-top: 1px solid var(--border-line); background-color: var(--bg-navbar); margin-top: auto; position: relative; z-index: 10; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text-muted);">
+            <!-- Tên tổ chức -->
+            <p style="font-weight: 800; font-size: 1.1rem; color: var(--text-main); letter-spacing: -0.3px;">Non-Nerd Society</p>
+            
+            <!-- Thông tin liên hệ -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 18px;">
+                <span><i class="fa-regular fa-envelope" style="color: var(--tagline-color); margin-right: 6px;"></i> Email: <a href="mailto:nonnerd2026@gmail.com" style="color: var(--text-main); text-decoration: none; font-weight: 600;">nonnerd2026@gmail.com</a></span>
+                <span><i class="fa-brands fa-facebook" style="color: #1877F2; margin-right: 6px;"></i> Fanpage: <a href="https://www.facebook.com/profile.php?id=61593837347815" target="_blank" rel="noopener noreferrer" style="color: var(--text-main); text-decoration: none; font-weight: 600;">Non-Nerd Society</a></span>
+            </div>
+
+            <!-- Bản quyền & Tác giả -->
+            <p style="font-size: 0.82rem; margin-top: 8px; opacity: 0.85;">
+                © 2026 Non-Nerd Society. All rights reserved. • Tác giả: <strong style="color: var(--text-main);">BoyfromHCMUT</strong>
+            </p>
+        </div>
+    </footer>
+
     <script>
         // 1. Chuyển đổi Theme trượt ở góc trái
         const themeSwitch = document.getElementById('corner-theme-switch');
@@ -535,7 +651,7 @@
             applyTheme(false);
         }
 
-        // 2. Dropdown Menu Sự kiện
+        // 2. Dropdown Menu Sự kiện trên Desktop
         const eventsDropdown = document.getElementById('events-dropdown');
         const eventsBtn = document.getElementById('events-btn');
 
@@ -550,7 +666,15 @@
             }
         });
 
-        // ================= 3. HIỆU ỨNG CANVAS BACKGROUND =================
+        // 3. Xử lý mở / đóng Menu Drawer trên Điện thoại
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobile-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // ================= 4. HIỆU ỨNG CANVAS BACKGROUND =================
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -717,23 +841,5 @@
 
         animate();
     </script>
-<!-- ================= FOOTER CREDIT ================= -->
-<footer style="width: 100%; padding: 40px 20px; border-top: 1px solid var(--border-line); background-color: var(--bg-navbar); margin-top: auto; position: relative; z-index: 10; text-align: center;">
-    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text-muted);">
-        <!-- Tên tổ chức -->
-        <p style="font-weight: 800; font-size: 1.1rem; color: var(--text-main); letter-spacing: -0.3px;">Non-Nerd Society</p>
-        
-        <!-- Thông tin liên hệ -->
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 18px;">
-            <span><i class="fa-regular fa-envelope" style="color: var(--tagline-color); margin-right: 6px;"></i> Email: <a href="mailto:nonnerd2026@gmail.com" style="color: var(--text-main); text-decoration: none; font-weight: 600;">nonnerd2026@gmail.com</a></span>
-            <span><i class="fa-brands fa-facebook" style="color: #1877F2; margin-right: 6px;"></i> Fanpage: <a href="https://www.facebook.com/profile.php?id=61593837347815" target="_blank" rel="noopener noreferrer" style="color: var(--text-main); text-decoration: none; font-weight: 600;">Non-Nerd Society</a></span>
-        </div>
-
-        <!-- Bản quyền & Tác giả -->
-        <p style="font-size: 0.82rem; margin-top: 8px; opacity: 0.85;">
-            © 2026 Non-Nerd Society. All rights reserved. • Tác giả: <strong style="color: var(--text-main);">BoyfromHCMUT</strong>
-        </p>
-    </div>
-</footer>
 </body>
 </html>
