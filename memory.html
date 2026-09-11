@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memories - Non-Nerd Society</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Thư viện nạp dữ liệu CSV từ Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <style>
+        :root {
+            /* Dải màu Gradient Tím - Xanh thương hiệu */
+            --grad-text: linear-gradient(180deg, #A855F7 0%, #A855F7 35%, #84CC16 75%, #84CC16 100%);
+            
+            /* Light Theme: Nền trắng ngà giấy vở, chữ văn bản đen */
+            --bg-body: #F8F5EE;
+            --bg-navbar: #EFE9DE;
+            --bg-card: #FFFFFF;
+            --text-main: #111111;
+            --text-muted: #4B4B4B;
+            --border-line: #E2DBD0;
+            --btn-cta-bg: #C1A87D;
+            --btn-cta-text: #FFFFFF;
+            --tagline-color: #8C2D19;
+            --box-shadow: rgba(0, 0, 0, 0.08) 0px 8px 24px;
+        }
+
+        /* Dark Theme */
+        body.dark-mode {
+            --bg-body: #121212;
+            --bg-navbar: #1E1E1E;
+            --bg-card: #1A1A1A;
+            --text-main: #F5F5F5;
+            --text-muted: #A3A3A3;
+            --border-line: #2E2E2E;
+            --btn-cta-bg: #84CC16;
+            --btn-cta-text: #121212;
+            --tagline-color: #C084FC;
+            --box-shadow: rgba(0, 0, 0, 0.4) 0px 8px 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.7;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .corner-toggle-container {
+            position: fixed;
+            top: 14px;
+            left: 20px;
+            z-index: 1100;
+        }
+
+        .theme-switch-slider {
+            width: 58px;
+            height: 30px;
+            background-color: var(--bg-navbar);
+            border: 1.5px solid var(--border-line);
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .switch-circle {
+            width: 24px;
+            height: 24px;
+            background-color: var(--text-main);
+            color: var(--bg-body);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            position: absolute;
+            left: 2px;
+            transform: translateX(0);
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode .switch-circle {
+            transform: translateX(28px);
+            background-color: #84CC16;
+            color: #121212;
+        }
+
+        h1, h2, h3, .brand-logo-text {
+            background: var(--grad-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            font-weight: 800;
+        }
+
+        header {
+            width: 100%;
+            padding: 14px 32px 14px 90px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--bg-body);
+            border-bottom: 1px solid var(--border-line);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+            transition: transform 0.2s ease, filter 0.3s ease;
+        }
+
+        .brand-container:hover .brand-logo-img {
+            transform: rotate(-6deg) scale(1.08);
+        }
+
+        body.dark-mode .brand-logo-img {
+            mix-blend-mode: screen;
+        }
+
+        .brand-title {
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-pill {
+            background-color: var(--bg-navbar);
+            padding: 4px 10px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: inset 0 0 0 1px var(--border-line);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.92rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(0, 0, 0, 0.07);
+        }
+
+        body.dark-mode .nav-link:hover, body.dark-mode .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown { position: relative; }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 10px;
+            background-color: var(--bg-card);
+            min-width: 200px;
+            border-radius: 14px;
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--border-line);
+            padding: 8px;
+            list-style: none;
+            z-index: 1001;
+        }
+
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -14px;
+            left: 0;
+            width: 100%;
+            height: 14px;
+            background: transparent;
+        }
+
+        .dropdown:hover .dropdown-menu,
+        .dropdown.show .dropdown-menu {
+            display: block;
+            animation: fadeIn 0.18s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -6px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .dropdown-menu li a {
+            display: block;
+            padding: 10px 16px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background-color: rgba(132, 204, 22, 0.15);
+            color: #65A30D;
+            font-weight: 700;
+            padding-left: 20px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-cta-main {
+            background-color: var(--btn-cta-bg);
+            color: var(--btn-cta-text);
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.92rem;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-cta-main:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 40px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        /* ================= MEMORIES GALLERY ================= */
+        .page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px 100px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .page-header h1 {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            margin-bottom: 12px;
+        }
+
+        .memory-section {
+            margin-bottom: 60px;
+        }
+
+        .memory-timeline-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 10px;
+        }
+
+        .memory-timeline-title span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--tagline-color);
+            background: rgba(168, 85, 247, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* Lưới hiển thị ảnh kiểu Thư viện ảnh */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .memory-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            position: relative;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+        }
+
+        .memory-img-wrapper {
+            width: 100%;
+            height: 220px;
+            background-color: rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        body.dark-mode .memory-img-wrapper {
+            background-color: rgba(255,255,255,0.03);
+        }
+
+        .memory-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .memory-card:hover .memory-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .memory-caption {
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .memory-caption small {
+            display: block;
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        /* Lightbox phóng to ảnh khi click */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            color: #FFFFFF;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 12px 16px 12px 75px; }
+            .nav-pill { display: none; }
+            .sub-header { padding: 12px 20px; }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+            .memory-img-wrapper { height: 160px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="corner-toggle-container">
+        <div class="theme-switch-slider" id="corner-theme-switch" title="Chuyển chế độ Sáng / Tối">
+            <div class="switch-circle">
+                <i class="fa-solid fa-sun" id="theme-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <a href="index.html" class="brand-container">
+            <img src="logo.png" alt="Non-Nerd Logo" class="brand-logo-img">
+            <span class="brand-title brand-logo-text">Non-Nerd</span>
+        </a>
+
+        <nav class="nav-pill">
+            <a href="index.html" class="nav-link">Trang chủ</a>
+            <a href="gioi-thieu.html" class="nav-link">Giới thiệu</a>
+            
+            <div class="dropdown" id="events-dropdown">
+                <button class="nav-link active" id="events-btn" type="button">
+                    Sự kiện <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="non-nerd-night.html">Non-Nerd Night</a></li>
+                    <li><a href="workshop.html">Workshop chuyên sâu</a></li>
+                    <li><a href="memory.html">Memories</a></li>
+                </ul>
+            </div>
+
+            <a href="request.html" class="nav-link">Đặt lịch</a>
+            <a href="apply.html" class="nav-link">Tuyển thành viên</a>
+            <a href="gop-y.html" class="nav-link">Góp ý</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="request.html" class="btn-cta-main">Đặt lịch ngay</a>
+        </div>
+    </header>
+
+    <div class="sub-header">
+        <span>KHO LƯU TRỮ HÌNH ẢNH</span>
+        <span>NHỮNG KỶ NIỆM ĐẸP NHẤT</span>
+    </div>
+
+    <main class="page-container">
+        <div class="page-header">
+            <p style="font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; color: var(--tagline-color); margin-bottom: 8px;">KHOẢNH KHẮC & KỶ NIỆM</p>
+            <h1>Memories of Non-Nerd</h1>
+            <p style="color: var(--text-muted); max-width: 620px; margin: 0 auto;">Nơi lưu giữ từng nụ cười, những cái gật gù tâm đắc và những câu chuyện kết nối không thể quên qua từng đêm gặp gỡ.</p>
+        </div>
+
+        <!-- MỤC 1: CÁC ĐÊM NON-NERD NIGHT -->
+        <section class="memory-section">
+            <div class="memory-timeline-title">
+                Non-Nerd Night
+                <span>Đêm gặp gỡ</span>
+            </div>
+
+            <div class="gallery-grid" id="night-memory-grid">
+                <p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Đang tải hình ảnh kỷ niệm...</p>
+            </div>
+        </section>
+
+        <!-- MỤC 2: WORKSHOP & HOẠT ĐỘNG CHUYÊN SÂU -->
+        <section class="memory-section">
+            <div class="memory-timeline-title">
+                Workshop & Thực Hành
+                <span>Học hỏi & Trải nghiệm</span>
+            </div>
+
+            <div class="gallery-grid" id="workshop-memory-grid">
+                <p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Đang tải hình ảnh workshop...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Phóng To Ảnh (Lightbox) -->
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="Phóng to ảnh kỷ niệm">
+    </div>
+
+    <!-- ================= FOOTER CREDIT ================= -->
+    <footer style="width: 100%; padding: 40px 20px; border-top: 1px solid var(--border-line); background-color: var(--bg-navbar); margin-top: auto; position: relative; z-index: 10; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text-muted);">
+            <p style="font-weight: 800; font-size: 1.1rem; color: var(--text-main); letter-spacing: -0.3px;">Non-Nerd Society</p>
+            
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 18px;">
+                <span><i class="fa-regular fa-envelope" style="color: var(--tagline-color); margin-right: 6px;"></i> Email: <a href="mailto:nonnerd2026@gmail.com" style="color: var(--text-main); text-decoration: none; font-weight: 600;">nonnerd2026@gmail.com</a></span>
+                <span><i class="fa-brands fa-facebook" style="color: #1877F2; margin-right: 6px;"></i> Fanpage: <a href="https://www.facebook.com/profile.php?id=61593837347815" target="_blank" rel="noopener noreferrer" style="color: var(--text-main); text-decoration: none; font-weight: 600;">Non-Nerd Society</a></span>
+            </div>
+
+            <p style="font-size: 0.82rem; margin-top: 8px; opacity: 0.85;">
+                © 2026 Non-Nerd Society. All rights reserved. • Tác giả: <strong style="color: var(--text-main);">BoyfromHCMUT</strong>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Chuyển đổi Theme
+        const themeSwitch = document.getElementById('corner-theme-switch');
+        const themeIcon = document.getElementById('theme-icon');
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                themeIcon.className = 'fa-solid fa-moon';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeIcon.className = 'fa-solid fa-sun';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        themeSwitch.addEventListener('click', () => {
+            const isDark = !document.body.classList.contains('dark-mode');
+            applyTheme(isDark);
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            applyTheme(true);
+        } else {
+            applyTheme(false);
+        }
+
+        // 2. Dropdown Menu
+        const eventsDropdown = document.getElementById('events-dropdown');
+        const eventsBtn = document.getElementById('events-btn');
+
+        eventsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            eventsDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!eventsDropdown.contains(e.target)) {
+                eventsDropdown.classList.remove('show');
+            }
+        });
+
+        // 3. Lightbox xem ảnh lớn
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        function openLightbox(src) {
+            if (src && !src.includes('placeholder')) {
+                lightboxImg.src = src;
+                lightbox.style.display = 'flex';
+            }
+        }
+
+        function closeLightbox() {
+            lightbox.style.display = 'none';
+        }
+
+        // ================= 4. NẠP DỮ LIỆU MEMORIES TỪ GOOGLE SHEET (GID: 643868531) =================
+        const MEMORIES_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQBd2OjG6UljeEH1ZS3VSFT0Y4kGX3RCHNSWrVn8BvdinH53mQJWD22PaevlRsENEmI1iJ6zE3Tt5zf/pub?gid=643868531&single=true&output=csv";
+
+        Papa.parse(MEMORIES_CSV_URL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                const nightGrid = document.getElementById('night-memory-grid');
+                const workshopGrid = document.getElementById('workshop-memory-grid');
+
+                nightGrid.innerHTML = '';
+                workshopGrid.innerHTML = '';
+
+                let hasNight = false;
+                let hasWorkshop = false;
+
+                results.data.forEach(item => {
+                    const loai = (item.Loai || item.loai || item.Category || item.category || '').trim().toLowerCase();
+                    let imgUrl = (item.LinkAnh || item.linkanh || item.HinhAnh || item.hinhanh || item.URL || item.url || '').trim();
+                    const tieuDe = (item.TieuDe || item.tieude || item.Title || item.title || '').trim();
+                    const phuDe = (item.PhuDe || item.phude || item.SuKien || item.sukien || item.Subtitle || item.subtitle || '').trim();
+
+                    if (!imgUrl) return;
+
+                    // Tự động chuyển đổi link xem trước Google Drive sang link ảnh trực tiếp
+                    if (imgUrl.includes('drive.google.com/file/d/')) {
+                        const fileIdMatch = imgUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                        if (fileIdMatch && fileIdMatch[1]) {
+                            imgUrl = 'https://lh3.googleusercontent.com/d/' + fileIdMatch[1];
+                        }
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'memory-card';
+                    card.onclick = () => openLightbox(imgUrl);
+                    card.innerHTML = `
+                        <div class="memory-img-wrapper">
+                            <img src="${imgUrl}" alt="${tieuDe || 'Ảnh kỷ niệm Non-Nerd'}" loading="lazy">
+                        </div>
+                        <div class="memory-caption">
+                            ${tieuDe || 'Khoảnh khắc kỷ niệm'}
+                            ${phuDe ? `<small>${phuDe}</small>` : ''}
+                        </div>
+                    `;
+
+                    if (loai === 'night' || loai.includes('night') || loai.includes('đêm')) {
+                        hasNight = true;
+                        nightGrid.appendChild(card);
+                    } else if (loai === 'workshop' || loai.includes('workshop')) {
+                        hasWorkshop = true;
+                        workshopGrid.appendChild(card);
+                    } else {
+                        // Mặc định nạp vào mục Non-Nerd Night nếu không chỉ định rõ
+                        hasNight = true;
+                        nightGrid.appendChild(card);
+                    }
+                });
+
+                if (!hasNight) {
+                    nightGrid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Chưa có hình ảnh kỷ niệm Non-Nerd Night nào.</p>';
+                }
+                if (!hasWorkshop) {
+                    workshopGrid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Chưa có hình ảnh kỷ niệm Workshop nào.</p>';
+                }
+            },
+            error: function(err) {
+                console.error("Lỗi khi tải dữ liệu Memories:", err);
+                document.getElementById('night-memory-grid').innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--tagline-color);">Không thể kết nối kho ảnh lúc này.</p>';
+                document.getElementById('workshop-memory-grid').innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--tagline-color);">Không thể kết nối kho ảnh lúc này.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
