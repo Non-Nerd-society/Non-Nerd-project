@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Non-Nerd Society - 5 phút để kể, cả tối để quen nhau</title>
     
+    <!-- Favicon biểu tượng chú bò trên tab trình duyệt -->
+    <link rel="icon" type="image/png" href="logo.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
@@ -339,7 +342,7 @@
             z-index: 1999;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
         }
@@ -362,7 +365,7 @@
             color: var(--text-main);
             font-size: 0.96rem;
             font-weight: 600;
-            padding: 11px 14px;
+            padding: 10px 14px;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -374,6 +377,72 @@
             background-color: rgba(132, 204, 22, 0.15);
             color: #65A30D;
             padding-left: 18px;
+        }
+
+        /* Nút Dropdown Sự kiện trên Mobile */
+        .mobile-dropdown-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            color: var(--text-main);
+            font-size: 0.96rem;
+            font-weight: 600;
+            font-family: inherit;
+            padding: 10px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .mobile-dropdown-btn:hover, .mobile-dropdown-btn.active {
+            background-color: rgba(132, 204, 22, 0.15);
+            color: #65A30D;
+        }
+
+        .mobile-dropdown-btn .chevron-icon {
+            font-size: 0.75rem;
+            transition: transform 0.25s ease;
+        }
+
+        .mobile-dropdown-btn.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Khung chứa các mục con sự kiện */
+        .mobile-submenu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 20px;
+            margin-top: 2px;
+            margin-bottom: 4px;
+        }
+
+        .mobile-submenu.open {
+            display: flex;
+        }
+
+        .mobile-sub-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .mobile-sub-link:hover, .mobile-sub-link.active {
+            color: #65A30D;
+            background-color: rgba(132, 204, 22, 0.1);
+            padding-left: 16px;
         }
 
         .sub-header {
@@ -561,12 +630,24 @@
             <span class="brand-logo-text" style="font-size: 1.25rem; font-weight: 800;">Non-Nerd</span>
             <button onclick="toggleMobileMenu()" style="background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 4px 8px;">&times;</button>
         </div>
+        
         <a href="index.html" class="mobile-nav-link active"><i class="fa-solid fa-house" style="width: 20px;"></i> Trang chủ</a>
         <a href="gioi-thieu.html" class="mobile-nav-link"><i class="fa-regular fa-compass" style="width: 20px;"></i> Giới thiệu</a>
-        <a href="non-nerd-night.html" class="mobile-nav-link"><i class="fa-solid fa-moon" style="width: 20px;"></i> Non-Nerd Night</a>
-        <a href="workshop.html" class="mobile-nav-link"><i class="fa-solid fa-chalkboard-user" style="width: 20px;"></i> Workshop chuyên sâu</a>
-        <a href="memory.html" class="mobile-nav-link"><i class="fa-solid fa-images" style="width: 20px;"></i> Memories</a>
-        <a href="request.html" class="mobile-nav-link"><i class="fa-regular fa-calendar-check" style="width: 20px;"></i> Đặt lịch</a>
+        
+        <!-- Mục Sự Kiện với nút mũi tên mở rộng (Accordion) -->
+        <div>
+            <button class="mobile-dropdown-btn" id="mobile-events-btn" onclick="toggleMobileEvents()">
+                <span><i class="fa-regular fa-calendar-check" style="width: 20px;"></i> Sự kiện</span>
+                <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+            <div class="mobile-submenu" id="mobile-events-submenu">
+                <a href="non-nerd-night.html" class="mobile-sub-link"><i class="fa-solid fa-moon" style="font-size: 0.8rem;"></i> Non-Nerd Night</a>
+                <a href="workshop.html" class="mobile-sub-link"><i class="fa-solid fa-chalkboard-user" style="font-size: 0.8rem;"></i> Workshop chuyên sâu</a>
+                <a href="memory.html" class="mobile-sub-link"><i class="fa-solid fa-images" style="font-size: 0.8rem;"></i> Memories</a>
+            </div>
+        </div>
+
+        <a href="request.html" class="mobile-nav-link"><i class="fa-regular fa-calendar-plus" style="width: 20px;"></i> Đặt lịch</a>
         <a href="apply.html" class="mobile-nav-link"><i class="fa-solid fa-user-plus" style="width: 20px;"></i> Tuyển thành viên</a>
         <a href="gop-y.html" class="mobile-nav-link"><i class="fa-regular fa-comment-dots" style="width: 20px;"></i> Góp ý</a>
 
@@ -674,7 +755,15 @@
             overlay.classList.toggle('active');
         }
 
-        // ================= 4. HIỆU ỨNG CANVAS BACKGROUND =================
+        // 4. Xử lý mở / đóng Tab Sự kiện con trên Mobile
+        function toggleMobileEvents() {
+            const btn = document.getElementById('mobile-events-btn');
+            const submenu = document.getElementById('mobile-events-submenu');
+            btn.classList.toggle('open');
+            submenu.classList.toggle('open');
+        }
+
+        // ================= 5. HIỆU ỨNG CANVAS BACKGROUND =================
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
 

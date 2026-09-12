@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đặt Lịch Tham Gia - Non-Nerd Society</title>
     
+    <!-- Favicon biểu tượng chú bò trên tab trình duyệt -->
+    <link rel="icon" type="image/png" href="logo.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
@@ -322,7 +325,7 @@
             z-index: 1999;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
         }
@@ -345,7 +348,7 @@
             color: var(--text-main);
             font-size: 0.96rem;
             font-weight: 600;
-            padding: 11px 14px;
+            padding: 10px 14px;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -357,6 +360,72 @@
             background-color: rgba(132, 204, 22, 0.15);
             color: #65A30D;
             padding-left: 18px;
+        }
+
+        /* Nút Dropdown Sự kiện trên Mobile */
+        .mobile-dropdown-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            color: var(--text-main);
+            font-size: 0.96rem;
+            font-weight: 600;
+            font-family: inherit;
+            padding: 10px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .mobile-dropdown-btn:hover, .mobile-dropdown-btn.active {
+            background-color: rgba(132, 204, 22, 0.15);
+            color: #65A30D;
+        }
+
+        .mobile-dropdown-btn .chevron-icon {
+            font-size: 0.75rem;
+            transition: transform 0.25s ease;
+        }
+
+        .mobile-dropdown-btn.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Khung chứa các mục con sự kiện */
+        .mobile-submenu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 20px;
+            margin-top: 2px;
+            margin-bottom: 4px;
+        }
+
+        .mobile-submenu.open {
+            display: flex;
+        }
+
+        .mobile-sub-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .mobile-sub-link:hover, .mobile-sub-link.active {
+            color: #65A30D;
+            background-color: rgba(132, 204, 22, 0.1);
+            padding-left: 16px;
         }
 
         .page-container {
@@ -581,11 +650,23 @@
             <span class="brand-logo-text" style="font-size: 1.25rem; font-weight: 800;">Non-Nerd</span>
             <button onclick="toggleMobileMenu()" style="background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 4px 8px;">&times;</button>
         </div>
+        
         <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house" style="width: 20px;"></i> Trang chủ</a>
         <a href="gioi-thieu.html" class="mobile-nav-link"><i class="fa-regular fa-compass" style="width: 20px;"></i> Giới thiệu</a>
-        <a href="non-nerd-night.html" class="mobile-nav-link"><i class="fa-solid fa-moon" style="width: 20px;"></i> Non-Nerd Night</a>
-        <a href="workshop.html" class="mobile-nav-link"><i class="fa-solid fa-chalkboard-user" style="width: 20px;"></i> Workshop chuyên sâu</a>
-        <a href="memory.html" class="mobile-nav-link"><i class="fa-solid fa-images" style="width: 20px;"></i> Memories</a>
+        
+        <!-- Mục Sự Kiện với nút mũi tên mở rộng (Accordion) -->
+        <div>
+            <button class="mobile-dropdown-btn" id="mobile-events-btn" onclick="toggleMobileEvents()">
+                <span><i class="fa-regular fa-calendar-check" style="width: 20px;"></i> Sự kiện</span>
+                <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+            <div class="mobile-submenu" id="mobile-events-submenu">
+                <a href="non-nerd-night.html" class="mobile-sub-link"><i class="fa-solid fa-moon" style="font-size: 0.8rem;"></i> Non-Nerd Night</a>
+                <a href="workshop.html" class="mobile-sub-link"><i class="fa-solid fa-chalkboard-user" style="font-size: 0.8rem;"></i> Workshop chuyên sâu</a>
+                <a href="memory.html" class="mobile-sub-link"><i class="fa-solid fa-images" style="font-size: 0.8rem;"></i> Memories</a>
+            </div>
+        </div>
+
         <a href="request.html" class="mobile-nav-link active"><i class="fa-regular fa-calendar-check" style="width: 20px;"></i> Đặt lịch</a>
         <a href="apply.html" class="mobile-nav-link"><i class="fa-solid fa-user-plus" style="width: 20px;"></i> Tuyển thành viên</a>
         <a href="gop-y.html" class="mobile-nav-link"><i class="fa-regular fa-comment-dots" style="width: 20px;"></i> Góp ý</a>
@@ -666,13 +747,16 @@
     <!-- ================= FOOTER CREDIT ================= -->
     <footer style="width: 100%; padding: 40px 20px; border-top: 1px solid var(--border-line); background-color: var(--bg-navbar); margin-top: auto; position: relative; z-index: 10; text-align: center;">
         <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text-muted);">
+            <!-- Tên tổ chức -->
             <p style="font-weight: 800; font-size: 1.1rem; color: var(--text-main); letter-spacing: -0.3px;">Non-Nerd Society</p>
             
+            <!-- Thông tin liên hệ -->
             <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 18px;">
                 <span><i class="fa-regular fa-envelope" style="color: var(--tagline-color); margin-right: 6px;"></i> Email: <a href="mailto:nonnerd2026@gmail.com" style="color: var(--text-main); text-decoration: none; font-weight: 600;">nonnerd2026@gmail.com</a></span>
                 <span><i class="fa-brands fa-facebook" style="color: #1877F2; margin-right: 6px;"></i> Fanpage: <a href="https://www.facebook.com/profile.php?id=61593837347815" target="_blank" rel="noopener noreferrer" style="color: var(--text-main); text-decoration: none; font-weight: 600;">Non-Nerd Society</a></span>
             </div>
 
+            <!-- Bản quyền & Tác giả -->
             <p style="font-size: 0.82rem; margin-top: 8px; opacity: 0.85;">
                 © 2026 Non-Nerd Society. All rights reserved. • Tác giả: <strong style="color: var(--text-main);">BoyfromHCMUT</strong>
             </p>
@@ -730,7 +814,15 @@
             overlay.classList.toggle('active');
         }
 
-        // 4. Modal Popup Đặt Lịch
+        // 4. Xử lý mở / đóng Tab Sự kiện con trên Mobile (Accordion)
+        function toggleMobileEvents() {
+            const btn = document.getElementById('mobile-events-btn');
+            const submenu = document.getElementById('mobile-events-submenu');
+            btn.classList.toggle('open');
+            submenu.classList.toggle('open');
+        }
+
+        // 5. Modal Popup Đặt Lịch
         const modal = document.getElementById('booking-modal');
         
         function openModal(eventName = null) {
@@ -756,7 +848,7 @@
             }
         }
 
-        // ================= 5. ĐỒNG BỘ DANH MỤC VÀ DROPDOWN TỪ GOOGLE SHEET =================
+        // ================= 6. ĐỒNG BỘ DANH MỤC VÀ DROPDOWN TỪ GOOGLE SHEET =================
         const CSV_EXPORT_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQBd2OjG6UljeEH1ZS3VSFT0Y4kGX3RCHNSWrVn8BvdinH53mQJWD22PaevlRsENEmI1iJ6zE3Tt5zf/pub?gid=0&single=true&output=csv";
 
         Papa.parse(CSV_EXPORT_URL, {
@@ -881,7 +973,7 @@
             }
         });
 
-        // ================= 6. GỬI DỮ LIỆU ĐĂNG KÝ TRỰC TIẾP VỀ GOOGLE APPS SCRIPT =================
+        // ================= 7. GỬI DỮ LIỆU ĐĂNG KÝ TRỰC TIẾP VỀ GOOGLE APPS SCRIPT =================
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNskwJqAhXIXxv8aXeKRIA0U4CmtSFptyDCWS2r-LShO1YWp3LCNaVGVg3ImlCaSs2yg/exec";
 
         async function handleBookingSubmit(e) {
