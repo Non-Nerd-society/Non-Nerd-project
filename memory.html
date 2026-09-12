@@ -426,27 +426,6 @@
             padding-left: 16px;
         }
 
-        .btn-frame {
-            background-color: var(--bg-card);
-            color: var(--text-main);
-            border: 2px solid var(--text-main);
-            padding: 12px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 3px 3px 0px var(--text-main);
-            border-radius: 4px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            transition: all 0.15s ease;
-        }
-
-        .btn-frame:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 5px 5px 0px var(--text-main);
-        }
-
         .sub-header {
             display: flex;
             justify-content: space-between;
@@ -501,7 +480,7 @@
             border-radius: 20px;
         }
 
-        /* Lưới hiển thị ảnh kiểu Thư viện ảnh */
+        /* Lưới hiển thị ảnh */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -551,47 +530,84 @@
 
         .memory-caption {
             padding: 14px 16px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--text-main);
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .memory-caption small {
             display: block;
             color: var(--text-muted);
-            font-weight: 400;
-            font-size: 0.8rem;
+            font-weight: 500;
+            font-size: 0.82rem;
             margin-top: 4px;
         }
 
-        /* Lightbox phóng to ảnh khi click */
+        /* Lightbox phóng to ảnh có kèm tiêu đề & chú thích */
         .lightbox-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(6px);
+            background-color: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(8px);
             z-index: 3000;
             justify-content: center;
             align-items: center;
             padding: 24px;
         }
 
+        .lightbox-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
         .lightbox-img {
-            max-width: 90%;
-            max-height: 85vh;
+            max-width: 100%;
+            max-height: 72vh;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             object-fit: contain;
+        }
+
+        .lightbox-info {
+            margin-top: 14px;
+            text-align: center;
+            background: rgba(18, 18, 18, 0.85);
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            max-width: 650px;
+            width: 100%;
+        }
+
+        .lightbox-title {
+            color: #FFFFFF;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .lightbox-subtitle {
+            color: #C084FC;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .close-lightbox {
             position: absolute;
-            top: 24px;
+            top: 20px;
             right: 28px;
             color: #FFFFFF;
-            font-size: 2rem;
+            font-size: 2.2rem;
             cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .close-lightbox:hover {
+            transform: scale(1.15);
         }
 
         @media (max-width: 768px) {
@@ -603,6 +619,10 @@
             .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
             .memory-img-wrapper { height: 150px; }
             .memory-caption { padding: 10px 12px; font-size: 0.82rem; }
+            .lightbox-img { max-height: 60vh; }
+            .lightbox-info { padding: 10px 16px; }
+            .lightbox-title { font-size: 1rem; }
+            .lightbox-subtitle { font-size: 0.82rem; }
         }
     </style>
 </head>
@@ -724,7 +744,13 @@
     <!-- Modal Phóng To Ảnh (Lightbox) -->
     <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
         <span class="close-lightbox">&times;</span>
-        <img class="lightbox-img" id="lightbox-img" src="" alt="Phóng to ảnh kỷ niệm">
+        <div class="lightbox-container" onclick="event.stopPropagation()">
+            <img class="lightbox-img" id="lightbox-img" src="" alt="Phóng to ảnh kỷ niệm">
+            <div class="lightbox-info" id="lightbox-info">
+                <div class="lightbox-title" id="lightbox-title"></div>
+                <div class="lightbox-subtitle" id="lightbox-subtitle"></div>
+            </div>
+        </div>
     </div>
 
     <!-- ================= FOOTER CREDIT ================= -->
@@ -802,13 +828,25 @@
             submenu.classList.toggle('open');
         }
 
-        // 5. Lightbox xem ảnh lớn
+        // 5. Lightbox xem ảnh lớn kèm Tiêu đề & Phụ đề
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxSubtitle = document.getElementById('lightbox-subtitle');
+        const lightboxInfo = document.getElementById('lightbox-info');
 
-        function openLightbox(src) {
+        function openLightbox(src, title, subtitle) {
             if (src && !src.includes('placeholder')) {
                 lightboxImg.src = src;
+                lightboxTitle.textContent = title || '';
+                lightboxSubtitle.textContent = subtitle || '';
+                
+                if (!title && !subtitle) {
+                    lightboxInfo.style.display = 'none';
+                } else {
+                    lightboxInfo.style.display = 'block';
+                }
+
                 lightbox.style.display = 'flex';
             }
         }
@@ -838,7 +876,7 @@
                     const loai = (item.Loai || item.loai || item.Category || item.category || '').trim().toLowerCase();
                     let imgUrl = (item.LinkAnh || item.linkanh || item.HinhAnh || item.hinhanh || item.URL || item.url || '').trim();
                     const tieuDe = (item.TieuDe || item.tieude || item.Title || item.title || '').trim();
-                    const phuDe = (item.PhuDe || item.phude || item.SuKien || item.sukien || item.Subtitle || item.subtitle || '').trim();
+                    const phuDe = (item.PhuDe || item.phude || item.ChuThich || item.chuthich || item.SuKien || item.sukien || item.Subtitle || item.subtitle || '').trim();
 
                     if (!imgUrl) return;
 
@@ -852,7 +890,7 @@
 
                     const card = document.createElement('div');
                     card.className = 'memory-card';
-                    card.onclick = () => openLightbox(imgUrl);
+                    card.onclick = () => openLightbox(imgUrl, tieuDe, phuDe);
                     card.innerHTML = `
                         <div class="memory-img-wrapper">
                             <img src="${imgUrl}" alt="${tieuDe || 'Ảnh kỷ niệm Non-Nerd'}" loading="lazy">
