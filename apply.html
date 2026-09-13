@@ -15,7 +15,10 @@
 
     <style>
         :root {
+            /* Dải màu Gradient Tím - Xanh thương hiệu */
             --grad-text: linear-gradient(180deg, #A855F7 0%, #A855F7 35%, #84CC16 75%, #84CC16 100%);
+            
+            /* Light Theme: Nền trắng ngà giấy vở, chữ văn bản đen */
             --bg-body: #F8F5EE;
             --bg-navbar: #EFE9DE;
             --bg-card: #FFFFFF;
@@ -587,10 +590,10 @@
                 <ul class="dropdown-menu">
                     <li><a href="non-nerd-night.html">Non-Nerd Night</a></li>
                     <li><a href="workshop.html">Workshop chuyên sâu</a></li>
-                    <li><a href="memory.html">Memories</a></li>
                 </ul>
             </div>
 
+            <a href="memory.html" class="nav-link">Memories</a>
             <a href="request.html" class="nav-link">Đặt lịch</a>
             <a href="apply.html" class="nav-link active">Tuyển thành viên</a>
             <a href="gop-y.html" class="nav-link">Góp ý</a>
@@ -625,10 +628,11 @@
             <div class="mobile-submenu" id="mobile-events-submenu">
                 <a href="non-nerd-night.html" class="mobile-sub-link"><i class="fa-solid fa-moon" style="font-size: 0.8rem;"></i> Non-Nerd Night</a>
                 <a href="workshop.html" class="mobile-sub-link"><i class="fa-solid fa-chalkboard-user" style="font-size: 0.8rem;"></i> Workshop chuyên sâu</a>
-                <a href="memory.html" class="mobile-sub-link"><i class="fa-solid fa-images" style="font-size: 0.8rem;"></i> Memories</a>
             </div>
         </div>
 
+        <!-- Mục Memories độc lập với icon thư viện ảnh -->
+        <a href="memory.html" class="mobile-nav-link"><i class="fa-regular fa-images" style="width: 20px;"></i> Memories</a>
         <a href="request.html" class="mobile-nav-link"><i class="fa-regular fa-calendar-plus" style="width: 20px;"></i> Đặt lịch</a>
         <a href="apply.html" class="mobile-nav-link active"><i class="fa-solid fa-user-plus" style="width: 20px;"></i> Tuyển thành viên</a>
         <a href="gop-y.html" class="mobile-nav-link"><i class="fa-regular fa-comment-dots" style="width: 20px;"></i> Góp ý</a>
@@ -717,13 +721,16 @@
     <!-- ================= FOOTER CREDIT ================= -->
     <footer style="width: 100%; padding: 40px 20px; border-top: 1px solid var(--border-line); background-color: var(--bg-navbar); margin-top: auto; position: relative; z-index: 10; text-align: center;">
         <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text-muted);">
+            <!-- Tên tổ chức -->
             <p style="font-weight: 800; font-size: 1.1rem; color: var(--text-main); letter-spacing: -0.3px;">Non-Nerd Society</p>
             
+            <!-- Thông tin liên hệ -->
             <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 18px;">
                 <span><i class="fa-regular fa-envelope" style="color: var(--tagline-color); margin-right: 6px;"></i> Email: <a href="mailto:nonnerd2026@gmail.com" style="color: var(--text-main); text-decoration: none; font-weight: 600;">nonnerd2026@gmail.com</a></span>
                 <span><i class="fa-brands fa-facebook" style="color: #1877F2; margin-right: 6px;"></i> Fanpage: <a href="https://www.facebook.com/profile.php?id=61593837347815" target="_blank" rel="noopener noreferrer" style="color: var(--text-main); text-decoration: none; font-weight: 600;">Non-Nerd Society</a></span>
             </div>
 
+            <!-- Bản quyền & Tác giả -->
             <p style="font-size: 0.82rem; margin-top: 8px; opacity: 0.85;">
                 © 2026 Non-Nerd Society. All rights reserved. • Tác giả: <strong style="color: var(--text-main);">BoyfromHCMUT</strong>
             </p>
