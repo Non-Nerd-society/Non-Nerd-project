@@ -1,0 +1,334 @@
+:root {
+    /* Dải màu Gradient Tím - Xanh thương hiệu */
+    --grad-text: linear-gradient(180deg, #A855F7 0%, #A855F7 35%, #84CC16 75%, #84CC16 100%);
+    
+    /* Light Theme: Nền trắng ngà giấy vở, chữ văn bản đen */
+    --bg-body: #F8F5EE;
+    --bg-navbar: #EFE9DE;
+    --bg-card: #FFFFFF;
+    --text-main: #111111;
+    --text-muted: #4B4B4B;
+    --border-line: #E2DBD0;
+    --btn-cta-bg: #C1A87D;
+    --btn-cta-text: #FFFFFF;
+    --tagline-color: #8C2D19;
+    --box-shadow: rgba(0, 0, 0, 0.08) 0px 8px 24px;
+}
+
+/* Dark Theme */
+body.dark-mode {
+    --bg-body: #121212;
+    --bg-navbar: #1E1E1E;
+    --bg-card: #1A1A1A;
+    --text-main: #F5F5F5;
+    --text-muted: #A3A3A3;
+    --border-line: #2E2E2E;
+    --btn-cta-bg: #84CC16;
+    --btn-cta-text: #121212;
+    --tagline-color: #C084FC;
+    --box-shadow: rgba(0, 0, 0, 0.4) 0px 8px 24px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Canvas nền hiệu ứng động toàn màn hình */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Giữ toàn bộ giao diện nổi lên trên lớp Canvas */
+header, .sub-header, main, .corner-toggle-container {
+    position: relative;
+    z-index: 10;
+}
+
+/* Nút chuyển đổi Light/Dark mode trượt ở góc trên bên trái */
+.corner-toggle-container {
+    position: fixed;
+    top: 14px;
+    left: 20px;
+    z-index: 1100;
+}
+
+.theme-switch-slider {
+    width: 58px;
+    height: 30px;
+    background-color: var(--bg-navbar);
+    border: 1.5px solid var(--border-line);
+    border-radius: 9999px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.switch-circle {
+    width: 24px;
+    height: 24px;
+    background-color: var(--text-main);
+    color: var(--bg-body);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    position: absolute;
+    left: 2px;
+    transform: translateX(0);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .switch-circle {
+    transform: translateX(28px);
+    background-color: #84CC16;
+    color: #121212;
+}
+
+/* Tiêu đề Gradient */
+h1, h2, h3, .brand-logo-text {
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    font-weight: 800;
+}
+
+header {
+    width: 100%;
+    padding: 14px 32px 14px 90px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-body);
+    border-bottom: 1px solid var(--border-line);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.brand-logo-img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    border-radius: 8px;
+    display: block;
+    transition: transform 0.2s ease, filter 0.3s ease;
+}
+
+.brand-container:hover .brand-logo-img {
+    transform: rotate(-6deg) scale(1.08);
+}
+
+body.dark-mode .brand-logo-img {
+    mix-blend-mode: screen;
+}
+
+.brand-title {
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+}
+
+.nav-pill {
+    background-color: var(--bg-navbar);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: inset 0 0 0 1px var(--border-line);
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: rgba(0, 0, 0, 0.07);
+}
+
+body.dark-mode .nav-link:hover, body.dark-mode .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Nút Hamburger trên điện thoại */
+.mobile-menu-btn {
+    display: none;
+    background: var(--bg-navbar);
+    border: 1px solid var(--border-line);
+    font-size: 1.15rem;
+    color: var(--text-main);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.mobile-menu-btn:active {
+    transform: scale(0.92);
+}
+
+/* Lớp phủ mờ nền khi mở Mobile Menu */
+.mobile-drawer-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1998;
+}
+
+.mobile-drawer-overlay.active {
+    display: block;
+}
+
+/* Menu trượt dạng ngăn kéo */
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100vh;
+    background-color: var(--bg-card);
+    border-left: 1px solid var(--border-line);
+    padding: 24px 20px;
+    box-shadow: -6px 0 25px rgba(0, 0, 0, 0.2);
+    z-index: 1999;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+}
+
+.mobile-drawer.open {
+    right: 0;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-line);
+    padding-bottom: 14px;
+    margin-bottom: 8px;
+}
+
+.mobile-nav-link {
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 0.96rem;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s ease;
+}
+
+.mobile-nav-link:hover, .mobile-nav-link.active {
+    background-color: rgba(132, 204, 22, 0.15);
+    color: #65A30D;
+    padding-left: 18px;
+}
+
+.sub-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 40px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-line);
+}
+
+/* Nút dạng khung retro dùng chung */
+.btn-frame {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 2px solid var(--text-main);
+    padding: 14px 36px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--text-main);
+    transition: all 0.15s ease;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-frame:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--text-main);
+    background-color: var(--bg-body);
+}
+
+.btn-frame:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--text-main);
+}
+
+@media (max-width: 768px) {
+    header { padding: 12px 16px 12px 75px; }
+    .nav-pill { display: none; }
+    .mobile-menu-btn { display: flex; }
+    .sub-header { padding: 12px 20px; font-size: 0.7rem; }
+}

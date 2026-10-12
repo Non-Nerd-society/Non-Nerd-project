@@ -12,433 +12,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Thư viện nạp dữ liệu CSV từ Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
+    <!-- CSS DÙNG CHUNG TOÀN HỆ THỐNG -->
+    <link rel="stylesheet" href="style.css">
+
     <style>
-        :root {
-            /* Dải màu Gradient Tím - Xanh thương hiệu */
-            --grad-text: linear-gradient(180deg, #A855F7 0%, #A855F7 35%, #84CC16 75%, #84CC16 100%);
-            
-            /* Light Theme: Nền trắng ngà giấy vở, chữ văn bản đen */
-            --bg-body: #F8F5EE;
-            --bg-navbar: #EFE9DE;
-            --bg-card: #FFFFFF;
-            --text-main: #111111;
-            --text-muted: #4B4B4B;
-            --border-line: #E2DBD0;
-            --btn-cta-bg: #C1A87D;
-            --btn-cta-text: #FFFFFF;
-            --tagline-color: #8C2D19;
-            --box-shadow: rgba(0, 0, 0, 0.08) 0px 8px 24px;
-        }
-
-        /* Dark Theme */
-        body.dark-mode {
-            --bg-body: #121212;
-            --bg-navbar: #1E1E1E;
-            --bg-card: #1A1A1A;
-            --text-main: #F5F5F5;
-            --text-muted: #A3A3A3;
-            --border-line: #2E2E2E;
-            --btn-cta-bg: #84CC16;
-            --btn-cta-text: #121212;
-            --tagline-color: #C084FC;
-            --box-shadow: rgba(0, 0, 0, 0.4) 0px 8px 24px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Nút chuyển đổi Light/Dark mode trượt ở góc trên bên trái */
-        .corner-toggle-container {
-            position: fixed;
-            top: 14px;
-            left: 20px;
-            z-index: 1100;
-        }
-
-        .theme-switch-slider {
-            width: 58px;
-            height: 30px;
-            background-color: var(--bg-navbar);
-            border: 1.5px solid var(--border-line);
-            border-radius: 9999px;
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            padding: 2px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .switch-circle {
-            width: 24px;
-            height: 24px;
-            background-color: var(--text-main);
-            color: var(--bg-body);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            position: absolute;
-            left: 2px;
-            transform: translateX(0);
-            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, color 0.3s ease;
-        }
-
-        body.dark-mode .switch-circle {
-            transform: translateX(28px);
-            background-color: #84CC16;
-            color: #121212;
-        }
-
-        /* Tiêu đề Gradient */
-        h1, h2, h3, .brand-logo-text {
-            background: var(--grad-text);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
-            font-weight: 800;
-        }
-
-        header {
-            width: 100%;
-            padding: 14px 32px 14px 90px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--bg-body);
-            border-bottom: 1px solid var(--border-line);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .brand-logo-img {
-            width: 42px;
-            height: 42px;
-            object-fit: contain;
-            border-radius: 8px;
-            display: block;
-            transition: transform 0.2s ease, filter 0.3s ease;
-        }
-
-        .brand-container:hover .brand-logo-img {
-            transform: rotate(-6deg) scale(1.08);
-        }
-
-        body.dark-mode .brand-logo-img {
-            mix-blend-mode: screen;
-        }
-
-        .brand-title {
-            font-size: 1.4rem;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-pill {
-            background-color: var(--bg-navbar);
-            padding: 4px 10px;
-            border-radius: 9999px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            box-shadow: inset 0 0 0 1px var(--border-line);
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-main);
-            font-size: 0.92rem;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 9999px;
-            transition: all 0.2s ease;
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(0, 0, 0, 0.07);
-        }
-
-        body.dark-mode .nav-link:hover, body.dark-mode .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .dropdown { position: relative; }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-top: 10px;
-            background-color: var(--bg-card);
-            min-width: 200px;
-            border-radius: 14px;
-            box-shadow: var(--box-shadow);
-            border: 1px solid var(--border-line);
-            padding: 8px;
-            list-style: none;
-            z-index: 1001;
-        }
-
-        .dropdown-menu::before {
-            content: '';
-            position: absolute;
-            top: -14px;
-            left: 0;
-            width: 100%;
-            height: 14px;
-            background: transparent;
-        }
-
-        .dropdown:hover .dropdown-menu,
-        .dropdown.show .dropdown-menu {
-            display: block;
-            animation: fadeIn 0.18s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -6px); }
-            to { opacity: 1; transform: translate(-50%, 0); }
-        }
-
-        .dropdown-menu li a {
-            display: block;
-            padding: 10px 16px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 8px;
-            transition: all 0.15s ease;
-        }
-
-        .dropdown-menu li a:hover {
-            background-color: rgba(132, 204, 22, 0.15);
-            color: #65A30D;
-            font-weight: 700;
-            padding-left: 20px;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-cta-main {
-            background-color: var(--btn-cta-bg);
-            color: var(--btn-cta-text);
-            text-decoration: none;
-            padding: 10px 22px;
-            border-radius: 9999px;
-            font-weight: 600;
-            font-size: 0.92rem;
-            border: none;
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .btn-cta-main:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        /* Nút Hamburger trên điện thoại */
-        .mobile-menu-btn {
-            display: none;
-            background: var(--bg-navbar);
-            border: 1px solid var(--border-line);
-            font-size: 1.15rem;
-            color: var(--text-main);
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease;
-        }
-
-        .mobile-menu-btn:active {
-            transform: scale(0.92);
-        }
-
-        /* Lớp phủ mờ nền khi mở Mobile Menu */
-        .mobile-drawer-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 1998;
-        }
-
-        .mobile-drawer-overlay.active {
-            display: block;
-        }
-
-        /* Menu trượt dạng ngăn kéo */
-        .mobile-drawer {
-            position: fixed;
-            top: 0;
-            right: -300px;
-            width: 280px;
-            height: 100vh;
-            background-color: var(--bg-card);
-            border-left: 1px solid var(--border-line);
-            padding: 24px 20px;
-            box-shadow: -6px 0 25px rgba(0, 0, 0, 0.2);
-            z-index: 1999;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-        }
-
-        .mobile-drawer.open {
-            right: 0;
-        }
-
-        .drawer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-line);
-            padding-bottom: 14px;
-            margin-bottom: 8px;
-        }
-
-        .mobile-nav-link {
-            text-decoration: none;
-            color: var(--text-main);
-            font-size: 0.96rem;
-            font-weight: 600;
-            padding: 10px 14px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.15s ease;
-        }
-
-        .mobile-nav-link:hover, .mobile-nav-link.active {
-            background-color: rgba(132, 204, 22, 0.15);
-            color: #65A30D;
-            padding-left: 18px;
-        }
-
-        /* Nút Dropdown Sự kiện trên Mobile */
-        .mobile-dropdown-btn {
-            width: 100%;
-            background: none;
-            border: none;
-            text-align: left;
-            color: var(--text-main);
-            font-size: 0.96rem;
-            font-weight: 600;
-            font-family: inherit;
-            padding: 10px 14px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .mobile-dropdown-btn:hover, .mobile-dropdown-btn.active {
-            background-color: rgba(132, 204, 22, 0.15);
-            color: #65A30D;
-        }
-
-        .mobile-dropdown-btn .chevron-icon {
-            font-size: 0.75rem;
-            transition: transform 0.25s ease;
-        }
-
-        .mobile-dropdown-btn.open .chevron-icon {
-            transform: rotate(180deg);
-        }
-
-        /* Khung chứa các mục con sự kiện */
-        .mobile-submenu {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            padding-left: 20px;
-            margin-top: 2px;
-            margin-bottom: 4px;
-        }
-
-        .mobile-submenu.open {
-            display: flex;
-        }
-
-        .mobile-sub-link {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.88rem;
-            font-weight: 600;
-            padding: 8px 12px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.15s ease;
-        }
-
-        .mobile-sub-link:hover, .mobile-sub-link.active {
-            color: #65A30D;
-            background-color: rgba(132, 204, 22, 0.1);
-            padding-left: 16px;
-        }
-
-        .sub-header {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 40px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border-line);
-        }
-
         .page-container {
             max-width: 1050px;
             margin: 0 auto;
@@ -451,40 +32,10 @@
         }
 
         .page-header h1 {
-            font-size: 2.8rem;
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: clamp(2.8rem, 6vw, 4.2rem);
             margin-bottom: 12px;
-        }
-
-        /* Khung phân mục */
-        .section-box {
-            margin-bottom: 60px;
-        }
-
-        .section-header-wrap {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid var(--border-line);
-            padding-bottom: 12px;
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-        }
-
-        .see-more-link {
-            color: var(--tagline-color);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .see-more-link:hover {
-            text-decoration: underline;
         }
 
         .events-grid {
@@ -523,33 +74,6 @@
             background: rgba(168, 85, 247, 0.15);
         }
 
-        .btn-frame {
-            background-color: var(--bg-card);
-            color: var(--text-main);
-            border: 2px solid var(--text-main);
-            padding: 10px;
-            font-size: 0.92rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 3px 3px 0px var(--text-main);
-            border-radius: 4px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            margin-top: 20px;
-            transition: all 0.15s ease;
-        }
-
-        .btn-frame:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 5px 5px 0px var(--text-main);
-        }
-
-        .btn-frame:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0px var(--text-main);
-        }
-
         /* Modal */
         .modal-overlay {
             display: none;
@@ -585,97 +109,13 @@
         }
 
         @media (max-width: 768px) {
-            header { padding: 12px 16px 12px 75px; }
-            .nav-pill { display: none; }
-            .btn-cta-main { display: none; }
-            .mobile-menu-btn { display: flex; }
-            .sub-header { padding: 12px 20px; font-size: 0.7rem; }
             .events-grid { grid-template-columns: 1fr; gap: 20px; }
             .event-card { padding: 20px; }
             .page-header h1 { font-size: 2.2rem; }
-            .section-title { font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Nút chuyển đổi Theme dạng trượt ở góc trái -->
-    <div class="corner-toggle-container">
-        <div class="theme-switch-slider" id="corner-theme-switch" title="Chuyển chế độ Sáng / Tối">
-            <div class="switch-circle">
-                <i class="fa-solid fa-sun" id="theme-icon"></i>
-            </div>
-        </div>
-    </div>
-
-    <header>
-        <a href="index.html" class="brand-container">
-            <img src="logo.png" alt="Non-Nerd Logo" class="brand-logo-img">
-            <span class="brand-title brand-logo-text">Non-Nerd</span>
-        </a>
-
-        <nav class="nav-pill">
-            <a href="index.html" class="nav-link">Trang chủ</a>
-            <a href="gioi-thieu.html" class="nav-link">Giới thiệu</a>
-            
-            <div class="dropdown" id="events-dropdown">
-                <button class="nav-link" id="events-btn" type="button">
-                    Sự kiện <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="non-nerd-night.html">Non-Nerd Night</a></li>
-                    <li><a href="workshop.html">Workshop chuyên sâu</a></li>
-                </ul>
-            </div>
-
-            <a href="memory.html" class="nav-link">Memories</a>
-            <a href="request.html" class="nav-link active">Đặt lịch</a>
-            <a href="apply.html" class="nav-link">Tuyển thành viên</a>
-            <a href="gop-y.html" class="nav-link">Góp ý</a>
-        </nav>
-
-        <div class="nav-actions">
-            <button class="btn-cta-main" onclick="openModal()">Đặt lịch ngay</button>
-            <!-- Nút Hamburger trên Mobile -->
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" title="Mở menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
-    </header>
-
-    <!-- Khung Menu Trượt Điện Thoại (Drawer) -->
-    <div class="mobile-drawer-overlay" id="drawer-overlay" onclick="toggleMobileMenu()"></div>
-    <div class="mobile-drawer" id="mobile-drawer">
-        <div class="drawer-header">
-            <span class="brand-logo-text" style="font-size: 1.25rem; font-weight: 800;">Non-Nerd</span>
-            <button onclick="toggleMobileMenu()" style="background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 4px 8px;">&times;</button>
-        </div>
-        
-        <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house" style="width: 20px;"></i> Trang chủ</a>
-        <a href="gioi-thieu.html" class="mobile-nav-link"><i class="fa-regular fa-compass" style="width: 20px;"></i> Giới thiệu</a>
-        
-        <!-- Mục Sự Kiện với nút mũi tên mở rộng (Accordion) -->
-        <div>
-            <button class="mobile-dropdown-btn" id="mobile-events-btn" onclick="toggleMobileEvents()">
-                <span><i class="fa-regular fa-calendar-check" style="width: 20px;"></i> Sự kiện</span>
-                <i class="fa-solid fa-chevron-down chevron-icon"></i>
-            </button>
-            <div class="mobile-submenu" id="mobile-events-submenu">
-                <a href="non-nerd-night.html" class="mobile-sub-link"><i class="fa-solid fa-moon" style="font-size: 0.8rem;"></i> Non-Nerd Night</a>
-                <a href="workshop.html" class="mobile-sub-link"><i class="fa-solid fa-chalkboard-user" style="font-size: 0.8rem;"></i> Workshop chuyên sâu</a>
-            </div>
-        </div>
-
-        <!-- Mục Memories độc lập với icon thư viện ảnh -->
-        <a href="memory.html" class="mobile-nav-link"><i class="fa-regular fa-images" style="width: 20px;"></i> Memories</a>
-        <a href="request.html" class="mobile-nav-link active"><i class="fa-regular fa-calendar-plus" style="width: 20px;"></i> Đặt lịch</a>
-        <a href="apply.html" class="mobile-nav-link"><i class="fa-solid fa-user-plus" style="width: 20px;"></i> Tuyển thành viên</a>
-        <a href="gop-y.html" class="mobile-nav-link"><i class="fa-regular fa-comment-dots" style="width: 20px;"></i> Góp ý</a>
-
-        <div style="margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-line);">
-            <button onclick="toggleMobileMenu(); openModal();" class="btn-frame" style="width: 100%; text-align: center; margin-top: 0; padding: 12px;">Đặt lịch ngay</button>
-        </div>
-    </div>
 
     <div class="sub-header">
         <span>NON-NERD SOCIETY</span>
@@ -686,40 +126,21 @@
         <div class="page-header">
             <p style="font-size: 0.9rem; font-weight: 700; letter-spacing: 2px; color: var(--tagline-color); margin-bottom: 8px;">ĐẶT CHỖ TRỰC TUYẾN</p>
             <h1>Lựa Chọn Sự Kiện & Giữ Chỗ</h1>
-            <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto;">Dưới đây là danh sách tổng hợp các đêm sự kiện giao lưu và workshop chuyên sâu đang mở đăng ký.</p>
+            <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto;">Dưới đây là danh sách tổng hợp tất cả các sự kiện và workshop đang mở đăng ký.</p>
         </div>
 
-        <!-- MỤC 1: NON-NERD NIGHT -->
-        <section class="section-box">
-            <div class="section-header-wrap">
-                <h2 class="section-title">1. Đêm Non-Nerd Night</h2>
-                <a href="non-nerd-night.html" class="see-more-link">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-
-            <div class="events-grid" id="night-grid-container">
-                <p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Đang tải danh sách đêm sự kiện...</p>
-            </div>
-        </section>
-
-        <!-- MỤC 2: WORKSHOP CHUYÊN SÂU -->
-        <section class="section-box">
-            <div class="section-header-wrap">
-                <h2 class="section-title">2. Workshop Chuyên Sâu</h2>
-                <a href="workshop.html" class="see-more-link">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-
-            <div class="events-grid" id="workshop-grid-container">
-                <p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Đang tải danh sách workshop...</p>
-            </div>
-        </section>
+        <!-- DANH SÁCH TỔNG HỢP CÁC SỰ KIỆN -->
+        <div class="events-grid" id="events-grid-container">
+            <p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Đang tải danh sách sự kiện...</p>
+        </div>
     </div>
 
     <!-- Modal Đặt Lịch Gửi Trực Tiếp Về Google Apps Script & Sheet -->
     <div class="modal-overlay" id="booking-modal" onclick="closeModalOutside(event)">
         <div class="modal-card">
             <button class="close-modal-btn" onclick="closeModal()">&times;</button>
-            <h2>ĐẶT CHỖ THAM GIA</h2>
-            <p style="color: var(--text-muted); margin: 8px 0 20px;">Điền thông tin để đăng ký tham gia sự kiện hoặc workshop.</p>
+            <h2 style="font-size: 1.5rem; margin-bottom: 4px;">ĐẶT CHỖ THAM GIA</h2>
+            <p style="color: var(--text-muted); margin: 0 0 20px; font-size: 0.92rem;">Điền thông tin để đăng ký tham gia sự kiện.</p>
             
             <form id="booking-form" onsubmit="handleBookingSubmit(event)">
                 <div style="margin-bottom: 16px;">
@@ -732,98 +153,23 @@
                     <input type="text" id="form-contact" required placeholder="name@example.com hoặc 09..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-line); background-color: var(--bg-body); color: var(--text-main); outline: none;">
                 </div>
 
-                <!-- Chọn danh mục và đêm tham gia tự động đồng bộ từ Google Sheet -->
                 <div style="margin-bottom: 22px;">
-                    <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">CHỌN SỰ KIỆN / WORKSHOP</label>
+                    <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">CHỌN SỰ KIỆN THAM GIA</label>
                     <select id="event-select" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-line); background-color: var(--bg-body); color: var(--text-main); outline: none; cursor: pointer; font-family: inherit;">
                         <option value="">Đang nạp danh sách sự kiện...</option>
                     </select>
                 </div>
 
-                <button type="submit" id="btn-submit-booking" class="btn-frame" style="width: 100%;">Xác nhận đăng ký</button>
+                <button type="submit" id="btn-submit-booking" class="btn-frame" style="width: 100%; margin-top: 0; padding: 12px;">Xác nhận đăng ký</button>
             </form>
         </div>
     </div>
 
-    <!-- ================= FOOTER CREDIT ================= -->
-    <footer style="width: 100%; padding: 40px 20px; border-top: 1px solid var(--border-line); background-color: var(--bg-navbar); margin-top: auto; position: relative; z-index: 10; text-align: center;">
-        <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text-muted);">
-            <!-- Tên tổ chức -->
-            <p style="font-weight: 800; font-size: 1.1rem; color: var(--text-main); letter-spacing: -0.3px;">Non-Nerd Society</p>
-            
-            <!-- Thông tin liên hệ -->
-            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 18px;">
-                <span><i class="fa-regular fa-envelope" style="color: var(--tagline-color); margin-right: 6px;"></i> Email: <a href="mailto:nonnerd2026@gmail.com" style="color: var(--text-main); text-decoration: none; font-weight: 600;">nonnerd2026@gmail.com</a></span>
-                <span><i class="fa-brands fa-facebook" style="color: #1877F2; margin-right: 6px;"></i> Fanpage: <a href="https://www.facebook.com/profile.php?id=61593837347815" target="_blank" rel="noopener noreferrer" style="color: var(--text-main); text-decoration: none; font-weight: 600;">Non-Nerd Society</a></span>
-            </div>
-
-            <!-- Bản quyền & Tác giả -->
-            <p style="font-size: 0.82rem; margin-top: 8px; opacity: 0.85;">
-                © 2026 Non-Nerd Society. All rights reserved. • Tác giả: <strong style="color: var(--text-main);">BoyfromHCMUT</strong>
-            </p>
-        </div>
-    </footer>
+    <!-- Script Tự động nạp Header, Drawer & Footer -->
+    <script src="layout.js"></script>
 
     <script>
-        // 1. Chuyển đổi Theme trượt ở góc trái
-        const themeSwitch = document.getElementById('corner-theme-switch');
-        const themeIcon = document.getElementById('theme-icon');
-
-        function applyTheme(isDark) {
-            if (isDark) {
-                document.body.classList.add('dark-mode');
-                themeIcon.className = 'fa-solid fa-moon';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.remove('dark-mode');
-                themeIcon.className = 'fa-solid fa-sun';
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        themeSwitch.addEventListener('click', () => {
-            const isDark = !document.body.classList.contains('dark-mode');
-            applyTheme(isDark);
-        });
-
-        if (localStorage.getItem('theme') === 'dark') {
-            applyTheme(true);
-        } else {
-            applyTheme(false);
-        }
-
-        // 2. Dropdown Menu Sự kiện
-        const eventsDropdown = document.getElementById('events-dropdown');
-        const eventsBtn = document.getElementById('events-btn');
-
-        eventsBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            eventsDropdown.classList.toggle('show');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!eventsDropdown.contains(e.target)) {
-                eventsDropdown.classList.remove('show');
-            }
-        });
-
-        // 3. Xử lý Drawer Menu trên Điện thoại
-        function toggleMobileMenu() {
-            const drawer = document.getElementById('mobile-drawer');
-            const overlay = document.getElementById('drawer-overlay');
-            drawer.classList.toggle('open');
-            overlay.classList.toggle('active');
-        }
-
-        // 4. Xử lý mở / đóng Tab Sự kiện con trên Mobile (Accordion)
-        function toggleMobileEvents() {
-            const btn = document.getElementById('mobile-events-btn');
-            const submenu = document.getElementById('mobile-events-submenu');
-            btn.classList.toggle('open');
-            submenu.classList.toggle('open');
-        }
-
-        // 5. Modal Popup Đặt Lịch
+        // ================= 1. MODAL POPUP ĐẶT LỊCH =================
         const modal = document.getElementById('booking-modal');
         
         function openModal(eventName = null) {
@@ -849,7 +195,7 @@
             }
         }
 
-        // ================= 6. ĐỒNG BỘ DANH MỤC VÀ DROPDOWN TỪ GOOGLE SHEET =================
+        // ================= 2. NẠP TOÀN BỘ SỰ KIỆN TỪ GOOGLE SHEET =================
         const CSV_EXPORT_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQBd2OjG6UljeEH1ZS3VSFT0Y4kGX3RCHNSWrVn8BvdinH53mQJWD22PaevlRsENEmI1iJ6zE3Tt5zf/pub?gid=0&single=true&output=csv";
 
         Papa.parse(CSV_EXPORT_URL, {
@@ -857,59 +203,47 @@
             header: true,
             skipEmptyLines: true,
             complete: function(results) {
-                const nightContainer = document.getElementById('night-grid-container');
-                const workshopContainer = document.getElementById('workshop-grid-container');
+                const container = document.getElementById('events-grid-container');
                 const selectEl = document.getElementById('event-select');
                 
-                nightContainer.innerHTML = '';
-                workshopContainer.innerHTML = '';
+                container.innerHTML = '';
                 if (selectEl) selectEl.innerHTML = '';
 
-                const optGroupNight = document.createElement('optgroup');
-                optGroupNight.label = "--- Đêm Non-Nerd Night ---";
-
-                const optGroupWorkshop = document.createElement('optgroup');
-                optGroupWorkshop.label = "--- Workshop Chuyên Sâu ---";
-
-                let hasNight = false;
-                let hasWorkshop = false;
+                let hasEvents = false;
 
                 results.data.forEach(item => {
-                    const loai = (item.Loai || item.loai || '').trim();
-                    const tieuDe = (item.TieuDe || item.tieude || '').trim();
-                    const moTa = (item.MoTa || item.mota || '').trim();
-                    const thoiGian = (item.ThoiGian || item.thoigian || '').trim();
-                    const diaDiem = (item.DiaDiem || item.diadiem || '').trim();
-                    const trangThai = (item.TrangThai || item.trangthai || '').trim();
+                    const tieuDe = (item.TieuDe || item.tieude || item.Title || item.title || '').trim();
+                    const moTa = (item.MoTa || item.mota || item.Description || item.description || '').trim();
+                    const thoiGian = (item.ThoiGian || item.thoigian || item.Time || item.time || '').trim();
+                    const diaDiem = (item.DiaDiem || item.diadiem || item.Location || item.location || '').trim();
+                    const trangThai = (item.TrangThai || item.trangthai || item.Status || item.status || '').trim();
 
                     if (!tieuDe) return;
 
+                    hasEvents = true;
                     const isOpen = trangThai.toLowerCase() === 'open';
 
-                    // 1. Phân loại cho mục Non-Nerd Night
-                    if (loai.toLowerCase() === 'night') {
-                        hasNight = true;
-
-                        const card = document.createElement('div');
-                        card.className = 'event-card';
-                        card.innerHTML = `
-                            <div>
-                                <span class="badge ${isOpen ? 'badge-open' : 'badge-upcoming'}">
-                                    ${isOpen ? 'ĐANG MỞ ĐĂNG KÝ' : 'SẮP DIỄN RA'}
-                                </span>
-                                <h3 style="font-size: 1.3rem; margin-bottom: 8px;">${tieuDe}</h3>
-                                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px;">${moTa}</p>
-                                <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px;">
-                                    <span><i class="fa-regular fa-clock" style="width: 18px;"></i> ${thoiGian}</span>
-                                    <span><i class="fa-solid fa-location-dot" style="width: 18px;"></i> ${diaDiem}</span>
-                                </div>
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    card.innerHTML = `
+                        <div>
+                            <span class="badge ${isOpen ? 'badge-open' : 'badge-upcoming'}">
+                                ${isOpen ? 'ĐANG MỞ ĐĂNG KÝ' : 'SẮP DIỄN RA'}
+                            </span>
+                            <h3 style="font-size: 1.3rem; margin-bottom: 8px;">${tieuDe}</h3>
+                            <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px;">${moTa}</p>
+                            <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px;">
+                                <span><i class="fa-regular fa-clock" style="width: 18px;"></i> ${thoiGian}</span>
+                                <span><i class="fa-solid fa-location-dot" style="width: 18px;"></i> ${diaDiem}</span>
                             </div>
-                            <button class="btn-frame" ${!isOpen ? 'style="opacity: 0.6; cursor: not-allowed;" onclick="alert(\'Đêm sự kiện này chưa mở đăng ký!\')"' : `onclick="openModal('${tieuDe}')"`}>
-                                ${isOpen ? 'Đặt chỗ đêm này' : 'Chưa mở'}
-                            </button>
-                        `;
-                        nightContainer.appendChild(card);
+                        </div>
+                        <button class="btn-frame" style="width: 100%; margin-top: 20px; padding: 10px;" ${!isOpen ? 'style="opacity: 0.6; cursor: not-allowed;" onclick="alert(\'Sự kiện này chưa mở đăng ký!\')"' : `onclick="openModal('${tieuDe}')"`}>
+                            ${isOpen ? 'Đặt chỗ ngay' : 'Chưa mở đăng ký'}
+                        </button>
+                    `;
+                    container.appendChild(card);
 
+                    if (selectEl) {
                         const option = document.createElement('option');
                         option.value = `${tieuDe} (${thoiGian})`;
                         option.textContent = `${tieuDe} (${thoiGian}${isOpen ? ' - Đang mở' : ' - Chưa mở'})`;
@@ -917,64 +251,21 @@
                             option.disabled = true;
                             option.style.color = 'var(--text-muted)';
                         }
-                        optGroupNight.appendChild(option);
-                    }
-
-                    // 2. Phân loại cho mục Workshop Chuyên Sâu
-                    else if (loai.toLowerCase() === 'workshop') {
-                        hasWorkshop = true;
-
-                        const card = document.createElement('div');
-                        card.className = 'event-card';
-                        card.innerHTML = `
-                            <div>
-                                <span class="badge ${isOpen ? 'badge-open' : 'badge-upcoming'}">
-                                    ${isOpen ? 'ĐANG MỞ ĐĂNG KÝ' : 'SẮP DIỄN RA'}
-                                </span>
-                                <h3 style="font-size: 1.3rem; margin-bottom: 8px;">${tieuDe}</h3>
-                                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px;">${moTa}</p>
-                                <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px;">
-                                    <span><i class="fa-regular fa-clock" style="width: 18px;"></i> ${thoiGian}</span>
-                                    <span><i class="fa-solid fa-location-dot" style="width: 18px;"></i> ${diaDiem}</span>
-                                </div>
-                            </div>
-                            <button class="btn-frame" ${!isOpen ? 'style="opacity: 0.6; cursor: not-allowed;" onclick="alert(\'Workshop này chưa mở đăng ký!\')"' : `onclick="openModal('${tieuDe}')"`}>
-                                ${isOpen ? 'Đặt chỗ workshop' : 'Chưa mở'}
-                            </button>
-                        `;
-                        workshopContainer.appendChild(card);
-
-                        const option = document.createElement('option');
-                        option.value = `${tieuDe} (${thoiGian})`;
-                        option.textContent = `${tieuDe} (${thoiGian}${isOpen ? ' - Đang mở' : ' - Chưa mở'})`;
-                        if (!isOpen) {
-                            option.disabled = true;
-                            option.style.color = 'var(--text-muted)';
-                        }
-                        optGroupWorkshop.appendChild(option);
+                        selectEl.appendChild(option);
                     }
                 });
 
-                if (!hasNight) {
-                    nightContainer.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Hiện chưa có đêm sự kiện nào.</p>';
-                }
-                if (!hasWorkshop) {
-                    workshopContainer.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Hiện chưa có workshop nào.</p>';
-                }
-
-                if (selectEl) {
-                    selectEl.appendChild(optGroupNight);
-                    selectEl.appendChild(optGroupWorkshop);
+                if (!hasEvents) {
+                    container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Hiện chưa có sự kiện nào được đăng.</p>';
                 }
             },
             error: function(err) {
                 console.error("Lỗi PapaParse:", err);
-                document.getElementById('night-grid-container').innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--tagline-color);">Không thể tải dữ liệu lúc này.</p>';
-                document.getElementById('workshop-grid-container').innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--tagline-color);">Không thể tải dữ liệu lúc này.</p>';
+                document.getElementById('events-grid-container').innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--tagline-color);">Không thể tải dữ liệu sự kiện lúc này.</p>';
             }
         });
 
-        // ================= 7. GỬI DỮ LIỆU ĐĂNG KÝ TRỰC TIẾP VỀ GOOGLE APPS SCRIPT =================
+        // ================= 3. GỬI DỮ LIỆU ĐĂNG KÝ VỀ GOOGLE APPS SCRIPT =================
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNskwJqAhXIXxv8aXeKRIA0U4CmtSFptyDCWS2r-LShO1YWp3LCNaVGVg3ImlCaSs2yg/exec";
 
         async function handleBookingSubmit(e) {
